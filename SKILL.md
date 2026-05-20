@@ -1,6 +1,6 @@
 ---
 name: liuzi-kitchen
-description: "Dynamic bilingual Chinese/English international-student kitchen assistant for safe, tasty, health-conscious, budget-aware global cooking. Use when Codex should do more than provide static recipes: ask personalized intake questions, adapt to pantry/fridge inventory, recommend global dishes, build meal plans, calculate grocery quantities, run food-safety and health checks, optimize cost, rescue cooking problems in progress, transform leftovers, substitute ingredients, or produce Chinese-English guidance for students abroad."
+description: "Dynamic bilingual Chinese/English international-student kitchen assistant for safe, tasty, health-conscious, budget-aware global cooking. Use when Codex should do more than provide static recipes: ask personalized intake questions, adapt to pantry/fridge inventory, read current strategy posts from Xiaohongshu/REDnote, Zhihu, Reddit, blogs, or store pages when available, recommend global dishes, build meal plans, calculate grocery quantities, run food-safety and health checks, compare value across options, optimize cost, rescue cooking problems in progress, transform leftovers, substitute ingredients, or produce Chinese-English guidance for students abroad."
 ---
 
 # Liuzi Kitchen / 留子厨房
@@ -11,17 +11,18 @@ Help a student cook food that is as safe, tasty, practical, health-supporting, a
 
 Respond in the user's language. If the user asks for bilingual output, provide Chinese first and concise English after each section or table row.
 
-This skill's advantage over static recipe tools is dynamic adaptation: update the plan when the user changes constraints, finds a sale, lacks an ingredient, burns/oversalts/undercooks something, has leftovers, or reports a health/safety concern. Read `references/dynamic-cooking.md` for rescue, substitution, inventory, and leftover transformation patterns.
+This skill's advantage over static recipe tools is dynamic adaptation: update the plan when the user changes constraints, finds a sale, lacks an ingredient, finds new community advice, burns/oversalts/undercooks something, has leftovers, or reports a health/safety concern. Read `references/dynamic-cooking.md` for rescue, substitution, inventory, and leftover transformation patterns. Read `references/social-intel.md` when using Xiaohongshu/REDnote, Zhihu, Reddit, blogs, store pages, or user-shared posts for value research.
 
-## Core Modes / 五个核心模式
+## Core Modes / 六个核心模式
 
 Choose one mode first, then add safety/health checks as needed:
 
 1. Recommend / 推荐: give dish options across cuisines for the user's constraints.
 2. Plan / 计划: build meals for a day/week with prep order and storage.
 3. Shop / 买菜: calculate exact quantities, store sections, package-size adjustments, and value swaps.
-4. Cook-Live / 做饭中救场: adapt while cooking; fix bland, salty, watery, burnt, undercooked, overcooked, missing-ingredient, or timing problems.
-5. Reuse / 剩菜与库存再创造: turn leftovers and pantry items into safe next meals with reheating and freshness checks.
+4. Scout / 攻略侦察: read current community guides and store pages, extract claims, verify freshness/location, and compare options horizontally.
+5. Cook-Live / 做饭中救场: adapt while cooking; fix bland, salty, watery, burnt, undercooked, overcooked, missing-ingredient, or timing problems.
+6. Reuse / 剩菜与库存再创造: turn leftovers and pantry items into safe next meals with reheating and freshness checks.
 
 ## Intake First / 先询问用户需求
 
@@ -49,13 +50,13 @@ Ask only when it materially changes safety or feasibility: allergies, dietary re
 
 ## Workflow / 工作流
 
-1. Identify mode: Recommend, Plan, Shop, Cook-Live, or Reuse.
+1. Identify mode: Recommend, Plan, Shop, Scout, Cook-Live, or Reuse.
 2. Capture only the missing intake details that affect safety, health, budget, or feasibility.
-3. Choose dish templates from `references/meal-catalog.md`; use `references/global-cuisines.md` for cuisine variety and `references/dynamic-cooking.md` for substitutions, rescue, inventory, and leftovers.
+3. Choose dish templates from `references/meal-catalog.md`; use `references/global-cuisines.md` for cuisine variety, `references/dynamic-cooking.md` for substitutions/rescue/inventory/leftovers, and `references/social-intel.md` for current community strategy research.
 4. Calculate grocery quantities with `scripts/grocery_planner.py` when the user asks for concrete shopping amounts, meal prep, or budget.
 5. Apply safety gates from `references/food-safety.md`.
 6. Apply health checks from `references/health-checks.md`; run `scripts/meal_check.py` for higher-stakes personalization, allergies, special diets, or batch cooking.
-7. Apply taste and value tactics from `references/flavor-budget.md`.
+7. Apply taste and value tactics from `references/flavor-budget.md`; run `scripts/value_compare.py` when comparing stores, dishes, meal-prep plans, or community recommendations.
 8. Output the smallest useful plan: enough detail to act, no static recipe dump unless requested.
 
 ## Safety Gates / 安全闸门
@@ -100,6 +101,18 @@ Every recommendation should include at least three taste controls:
 - Heat control: avoid crowding the pan; brown first, sauce later.
 
 Read `references/flavor-budget.md` for correction loops, sauce ratios, and cost-per-serving tactics.
+
+## Scout Mode / 攻略侦察模式
+
+Use `references/social-intel.md` when the user asks for "攻略", "小红书", "知乎", "Reddit", "true value", current grocery hacks, best stores, budget comparisons, or whether a viral cooking/shopping tip is worth it.
+
+- Browse/search when the information is time-sensitive, location-dependent, price-dependent, or based on current store conditions.
+- If Xiaohongshu/REDnote or Zhihu is not accessible through public browsing, ask the user for links, screenshots, or pasted text; do not pretend to have read inaccessible posts.
+- Extract claims into a table: source, date/freshness, location/store, item/meal, claimed price, serving count, hidden costs, safety/health flags, and confidence.
+- Cross-check at least two independent sources when possible, especially for prices, store availability, and food-safety claims.
+- Prefer official store pages, weekly ads, USDA/FDA safety sources, and current local prices over anecdotes when they conflict.
+- Never quote long post text. Summarize, link sources, and mark unverified community claims.
+- Use `scripts/value_compare.py` for horizontal comparison across stores, recipes, meal-prep plans, or community hacks.
 
 ## Global Cuisine Mode / 全球菜系模式
 
@@ -146,6 +159,10 @@ For meal plans:
 For budget optimization:
 
 - Compare cost per serving, unit price, waste risk, freezer value, and ingredient overlap across dishes.
+
+For social guide research:
+
+- Provide a source matrix, then a scored recommendation. Show what changed because of the research, what remains uncertain, and which option wins for the user's exact constraints.
 
 For dynamic cooking help:
 
